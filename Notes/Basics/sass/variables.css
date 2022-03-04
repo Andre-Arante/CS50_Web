@@ -1,0 +1,10 @@
+/*  Sass variables are indentified by a dollar sign */
+ul {
+  font-size: 14px;
+  color: red;
+}
+
+ul {
+  color: red;
+}
+/*# sourceMappingURL=variables.css.map */

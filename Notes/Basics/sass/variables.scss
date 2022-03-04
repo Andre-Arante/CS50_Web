@@ -1,0 +1,13 @@
+/*  Sass variables are indentified by a dollar sign */
+$color: red;
+
+ul 
+{
+    font-size: 14px;
+    color: $color;
+}
+
+ul
+{
+    color: $color
+}
