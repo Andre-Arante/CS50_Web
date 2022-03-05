@@ -24,3 +24,10 @@
 > python manage.py startapp "app-name"
 > 
 creates a new dir in project dir titled "app-name"
+
+## Setting up virtual enviorment
+> virtualenv venv
+>
+> venv/Scripts/activate
+> 
+> pip install django
