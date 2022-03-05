@@ -10,6 +10,7 @@
 ## Installing Django
 - In command line:
 > pip3 install Django
+> 
 > django-admin startproject "project-name"
 
 ## Running Django
