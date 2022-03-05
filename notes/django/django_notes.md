@@ -16,9 +16,11 @@
 ## Running Django
 - In command line:
 > python manage.py runserver
+> 
 > http://127.0.0.1:8000/ - copy into web browser
 
 ## Starting App
 - In command line:
 > python manage.py startapp "app-name"
-> creates a new dir in project dir titled "app-name"
+> 
+creates a new dir in project dir titled "app-name"
