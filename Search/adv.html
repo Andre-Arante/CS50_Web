@@ -16,23 +16,27 @@
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="adv.html">Advanced Search</a>
+                    <a class="nav-link" href="index.html">Google</a>
                 </li>
             </ul>
         </nav>
 
-    <!-- Search Bar -->
-    <form action="https://www.google.com/search" method="get">
-        <input type="text" name="q" placeholder=" Google Search" id="main-search">
-    </form>
+        <b>Find pages with...</b>
 
-    <!-- Container for buttons-->
-    <div class="container"> 
-        <form action="http://www.agoogleaday.com/#date=2012-01-04" method="get">
-            <div><input type="submit" value="I'm Feeling Lucky"></div>
+        <form action="https://www.google.com/search" class="adv-search-boxes" method="GET" name="f">
+            <div class="left-column"> all these words: </div>
+            <input type="text" class="input" name="as_q">
+
+            <div class="left-column"> this exact word or phrase: </div>
+            <input type="text" class="input" name="as_epq">
+
+            <div class="left-column"> any of these words: </div>
+            <input type="text" class="input" name="as_oq">
+
+            <div class="left-column"> none of these words: </div>
+            <input type="text" class="input" name="as_eq">
+
+            <input type="submit">
         </form>
-        <div><input type="submit" value="Google Search" class="search"></div>
-    </div>
-
     </body>
 </html>
