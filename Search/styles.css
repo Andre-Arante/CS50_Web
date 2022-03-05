@@ -1,0 +1,47 @@
+body {
+  background-color: white;
+}
+
+.search {
+  height: 15%;
+  margin-left: -150px;
+}
+
+input[type="text"] {
+  border-radius: 15px;
+  color: #202124;
+  background-color: white;
+  border: 1px solid #202124;
+  position: absolute;
+  top: 46%;
+  margin-left: 25%;
+  width: 50%;
+  height: 4%;
+  padding: 0.75%;
+}
+
+.container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  position: relative;
+  color: #202124;
+}
+
+.container > * {
+  border: 1px;
+  position: absolute;
+  margin: 20px;
+  margin-top: 25%;
+  margin-left: 50%;
+  padding: 20px;
+}
+
+img {
+  margin-left: 5%;
+  height: 12.5%;
+  width: 12.5%;
+}
+/*# sourceMappingURL=styles.css.map */
