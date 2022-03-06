@@ -48,7 +48,7 @@ creates a new dir in project dir titled "app-name"
 4. within views.py, create new views: render template
 5. create a template within the templates/ dir  
 
-## Static files (css)
+## Static files (css or js)
 1. create static/ dir and "app-name" dir within static/
 2. add > {% load static %} at the top of html file
->
+3. within head tags add > <link href="{% static 'newyear.styles.css' %}" rel="stylesheet">
