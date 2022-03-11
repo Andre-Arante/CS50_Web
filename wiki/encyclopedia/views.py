@@ -28,11 +28,12 @@ def search(title):
     
     q = request.Get.get('q')
 
+    results = []
+
     if q in util.list_entries:
+        ## TODO: clean up query
+        results.append(q)
 
-        content = markdown(util.get_entry(q))
-
-        return render(request, "encyclopedia/entry.html", {
-            "title": q,
-            "content": content,
-        })
+    return render(request, "encyclopedia/search.html", {
+        "results": results
+    })
