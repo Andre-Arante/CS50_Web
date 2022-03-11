@@ -24,16 +24,19 @@ def get_page(request, title):
         "content": content,
     })
 
-def search(title):
+def search(request):
     
-    q = request.Get.get('q')
+    q_dict = request.GET
+    q = q_dict['q']
 
     results = []
+    entries = util.list_entries()
 
-    if q in util.list_entries:
-        ## TODO: clean up query
-        results.append(q)
+    for entry in entries:
+        if q.capitalize().find(entry.capitalize()) != -1: 
+            results.append(entry)
 
     return render(request, "encyclopedia/search.html", {
-        "results": results
+        "query": q,
+        "results": results,
     })
