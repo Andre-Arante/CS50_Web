@@ -14,11 +14,23 @@ def index(request):
 
 def get_page(request, title):
 
-    content = util.get_entry(title)
+    q_dict = request.GET
+    
+    if q_dict['title'] != None:
+        title = q_dict['title']
+        content = q_dict['content']
 
+        util.save_entry(title, content)
+    else:
+        content = util.get_entry(title)
+
+    ## Generates page not found error
     if content == None:
         content = "Error page not found"
+
+    ## Convert markdown content to html page
     content = markdown(content)
+
     return render(request, "encyclopedia/entry.html", {
         "title": title,
         "content": content,
@@ -33,10 +45,13 @@ def search(request):
     entries = util.list_entries()
 
     for entry in entries:
-        if q.capitalize().find(entry.capitalize()) != -1: 
+        if q.capitalize() in entry.capitalize(): 
             results.append(entry)
 
     return render(request, "encyclopedia/search.html", {
         "query": q,
         "results": results,
     })
+
+def create(request):
+    return render(request, "encyclopedia/create.html")
