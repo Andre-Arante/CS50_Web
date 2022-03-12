@@ -20,7 +20,5 @@ from encyclopedia import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('wiki/', include("encyclopedia.urls")),
-    path('search/', views.search, name='search'),
-    path('create/', views.create, name="create")
+    path('', include("encyclopedia.urls"))
 ]
