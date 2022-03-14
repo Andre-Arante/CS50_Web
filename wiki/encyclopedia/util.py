@@ -36,3 +36,6 @@ def get_entry(title):
     except FileNotFoundError:
         return None
 
+def clean_up(str):
+    return str[11:-2]
+
