@@ -4,4 +4,12 @@
     <h2>Active Listings</h2>
 
     TODO
+    <table>
+        {% for listing in listings %}
+            <tr>
+                <img src="/auctions/static/auctions/imgs/nimbus.jpg" alt="{{listing.name}}">
+                <td style="height: 200px; width: 1300px">{{listing.name}}: ${{listing.selling_price}}</td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
