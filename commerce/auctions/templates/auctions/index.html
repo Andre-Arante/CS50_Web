@@ -1,5 +1,5 @@
 {% extends "auctions/layout.html" %}
-
+{% load static %}
 {% block body %}
     <h2>Active Listings</h2>
 
@@ -7,7 +7,7 @@
     <table>
         {% for listing in listings %}
             <tr>
-                <img src="/auctions/static/auctions/imgs/nimbus.jpg" alt="{{listing.name}}">
+                <td><img src="{{listing.image}}"></td>
                 <td style="height: 200px; width: 1300px">{{listing.name}}: ${{listing.selling_price}}</td>
             </tr>
         {% endfor %}
