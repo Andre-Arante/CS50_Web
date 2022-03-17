@@ -144,3 +144,6 @@ Overall result will be the same as the original table with columns (name, origin
 > Airport.objects.filter(city="New York").first()
 >
 > Airport.objects.get(city="New York")
+
+# Importing images
+https://drive.google.com/uc?export=view&id=[image_id]
