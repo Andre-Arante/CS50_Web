@@ -1,3 +1,4 @@
+import re
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -5,13 +6,31 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import User, Auction_Listings
+from .forms import Create_Form
 
-
+    
 def index(request):
     return render(request, "auctions/index.html", {
         "listings": Auction_Listings.objects.all()
     })
 
+def create(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = Create_Form(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect('/')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = Create_Form()
+
+    return render(request, 'auctions/create.html', {'form': form})
 
 def login_view(request):
     if request.method == "POST":

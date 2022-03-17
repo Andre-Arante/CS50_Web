@@ -15,10 +15,7 @@ class Auction_Listings(models.Model):
 
     name = models.CharField(max_length=64)
     selling_price = models.IntegerField(default=100)
-    image = models.ImageField(upload_to='auctions\static', default='..auctions/static/default.jpg')
+    image = models.URLField(default='google.com')
 
-    def date_published():
+    def date_published(self):
         return self.date.strftime('%B %d %Y')
-
-    def __str__(self):
-        return f"{self.name} for ${self.selling_price}. Image can be found at {self.image}"
