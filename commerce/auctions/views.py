@@ -22,15 +22,20 @@ def create(request):
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
-            # ...
+            listing = Auction_Listings(name=form.cleaned_data.get("name"), selling_price=form.cleaned_data.get("selling_price"), image=form.cleaned_data.get("image"))
+            listing.save()
             # redirect to a new URL:
-            return HttpResponseRedirect('/')
-
+            return render(request, 'auctions/index.html', {
+                "listings": Auction_Listings.objects.all()
+            })
     # if a GET (or any other method) we'll create a blank form
     else:
         form = Create_Form()
 
     return render(request, 'auctions/create.html', {'form': form})
+
+def listing(request):
+    return render(request, 'auctions/listing.html')
 
 def login_view(request):
     if request.method == "POST":

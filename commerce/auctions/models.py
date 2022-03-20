@@ -13,9 +13,16 @@ class Auction_Listings(models.Model):
     edit via create_listings
     """
 
+    ## Basic information
     name = models.CharField(max_length=64)
     selling_price = models.IntegerField(default=100)
     image = models.URLField(default='google.com')
 
+    ## Listing page information
+    watchlisted = models.BooleanField(default=False)
+    closed = models.BooleanField(default=False)
+    comments = models.TextField
+
+    ## Published timestamp
     def date_published(self):
         return self.date.strftime('%B %d %Y')
