@@ -3,7 +3,10 @@ from django.db import models
 from django.utils import timezone
 
 class User(AbstractUser):
-    watchlist = models.JSONField()
+    pass
+
+class Category(models.Model):
+    name = models.CharField(max_length=64)
 
 class Auction_Listings(models.Model):
     """
@@ -17,11 +20,41 @@ class Auction_Listings(models.Model):
     name = models.CharField(max_length=64)
     selling_price = models.IntegerField(default=100)
     image = models.URLField(default='google.com')
-    creator = models.CharField(default=None, max_length=64)
+    # description = models.TextField(default="Add description here.")
+    creator = models.ForeignKey('User', max_length=64, related_name="person_who_created_item", on_delete=models.CASCADE)
 
     ## Listing page information
-    watchlisted = models.BooleanField(default=False)
     closed = models.BooleanField(default=False)
+    # category = models.ForeignKey('Category', on_delete=models.CASCADE, related_name="auction_category")
+
+    ## Published timestamp
+    def date_published(self):
+        return self.date.strftime('%B %d %Y')
+
+## Stores bid information
+class Bid(models.Model):
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="bid_placer")
+    bid = models.IntegerField(default=100)
+    auction = models.ForeignKey("Auction_Listings", on_delete=models.CASCADE, related_name="auction_bidded_on")
+    
+    ## Published timestamp
+    def date_published(self):
+        return self.date.strftime('%B %d %Y')
+
+## Stores comment information
+class Comment(models.Model):
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="comment_writer")
+    auction = models.ForeignKey("Auction_Listings", on_delete=models.CASCADE, related_name="auction_commented_on")
+    content = models.TextField(max_length=999)
+
+    ## Published timestamp
+    def date_published(self):
+        return self.date.strftime('%B %d %Y')
+
+## Stores watchlist information
+class Watchlist(models.Model):
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="watchlister")
+    auction = models.ForeignKey("Auction_Listings", on_delete=models.CASCADE, related_name="auction_watchlisted")
 
     ## Published timestamp
     def date_published(self):

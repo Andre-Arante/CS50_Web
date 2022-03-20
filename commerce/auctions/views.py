@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Auction_Listings
+from .models import *
 from .forms import Create_Form, Edit_Form, Bid_Form
 
     
@@ -26,13 +26,16 @@ def create(request):
             username = None
             if request.user.is_authenticated:
                 username = request.user.username
+
             # process the data in form.cleaned_data as required
             listing = Auction_Listings(
                 name=form.cleaned_data.get("name"), 
                 selling_price=form.cleaned_data.get("selling_price"), 
                 image=form.cleaned_data.get("image"), 
-                creator=username)
+                creator=username,
+                category=form.cleaned_data.get("category"))
             listing.save()
+
             # redirect to a new URL:
             return render(request, 'auctions/index.html', {
                 "listings": Auction_Listings.objects.all()
