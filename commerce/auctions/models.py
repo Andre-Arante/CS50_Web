@@ -3,7 +3,7 @@ from django.db import models
 from django.utils import timezone
 
 class User(AbstractUser):
-    pass
+    watchlist = models.JSONField()
 
 class Auction_Listings(models.Model):
     """
@@ -17,11 +17,11 @@ class Auction_Listings(models.Model):
     name = models.CharField(max_length=64)
     selling_price = models.IntegerField(default=100)
     image = models.URLField(default='google.com')
+    creator = models.CharField(default=None, max_length=64)
 
     ## Listing page information
     watchlisted = models.BooleanField(default=False)
     closed = models.BooleanField(default=False)
-    comments = models.TextField
 
     ## Published timestamp
     def date_published(self):

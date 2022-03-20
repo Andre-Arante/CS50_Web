@@ -1,6 +1,23 @@
 {% extends "auctions/layout.html" %}
 {% load static %}
 {% block body %}
-    <h2>{{ title }}</h2>
-    {{ content}}
+    <h1> {{ listing.name }} by <em>{{ listing.creator }}</em></h1>
+
+    <hr>
+
+    <form action="{% url 'listing' listing.id %}" method="post">
+        {% csrf_token %}
+        {{ edit_form }}
+        <input type="submit" value="Submit">
+    </form>
+
+    <hr>
+
+    <form action="{% url 'listing' listing.id %}" method="post">
+        {% csrf_token %}
+        {{ bid_form }}
+        <input type="submit" value="Submit">
+    </form>
+    <hr>
+        
 {% endblock %}

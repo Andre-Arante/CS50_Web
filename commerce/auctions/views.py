@@ -1,12 +1,13 @@
 import re
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 from .models import User, Auction_Listings
-from .forms import Create_Form
+from .forms import Create_Form, Edit_Form, Bid_Form
 
     
 def index(request):
@@ -21,8 +22,16 @@ def create(request):
         form = Create_Form(request.POST)
         # check whether it's valid:
         if form.is_valid():
+            # fetch username in order
+            username = None
+            if request.user.is_authenticated:
+                username = request.user.username
             # process the data in form.cleaned_data as required
-            listing = Auction_Listings(name=form.cleaned_data.get("name"), selling_price=form.cleaned_data.get("selling_price"), image=form.cleaned_data.get("image"))
+            listing = Auction_Listings(
+                name=form.cleaned_data.get("name"), 
+                selling_price=form.cleaned_data.get("selling_price"), 
+                image=form.cleaned_data.get("image"), 
+                creator=username)
             listing.save()
             # redirect to a new URL:
             return render(request, 'auctions/index.html', {
@@ -34,8 +43,48 @@ def create(request):
 
     return render(request, 'auctions/create.html', {'form': form})
 
-def listing(request):
-    return render(request, 'auctions/listing.html')
+@login_required
+def listing(request, listing_id):
+
+    ## Handle form input via POST
+    listing = Auction_Listings.objects.get(id=listing_id)
+    if request.method == "POST":
+        # Bid Form
+        bid_form = Bid_Form(request.POST)
+        if bid_form.is_valid():
+            bid = bid_form.cleaned_data.get("bid")
+            if bid > listing.selling_price:
+                listing.selling_price = bid
+            
+        # Edit Form
+        edit_form = Edit_Form(request.POST)
+        if edit_form.is_valid():
+            closed = edit_form.cleaned_data.get("closed")
+            listing.closed = closed
+
+        listing.save()
+        return render(request, 'auctions/index.html', {
+                "listings": Auction_Listings.objects.all()
+            })
+
+
+    else:
+        try:
+            listing = Auction_Listings.objects.get(id=listing_id)
+        except Auction_Listings.DoesNotExist:
+            raise Http404("Flight not found.")
+
+        ## Generate correct form based on user's logged in status
+        edit_form = "Must be owner to edit."
+        bid_form = Bid_Form()
+        if request.user.username == listing.creator:
+            edit_form = Edit_Form()
+
+        return render(request, 'auctions/listing.html', {
+            "listing": listing,
+            "edit_form": edit_form,
+            "bid_form": bid_form
+        })
 
 def login_view(request):
     if request.method == "POST":
@@ -87,3 +136,6 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+def watchlist(request):
+    return render(request, "auctions/watchlist.html")

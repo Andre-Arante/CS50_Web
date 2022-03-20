@@ -6,8 +6,18 @@
     <table>
         {% for listing in listings %}
             <tr>
-                <td><img src="{{listing.image}}"></td>
-                <td style="height: 200px; width: 1300px">{{listing.name}}: ${{listing.selling_price}}</td>
+                
+                
+                <td id="img-box">
+                    <img src="{{listing.image}}">
+                    <br>
+                    {% if listing.closed %}
+                    <b>CLOSED - ITEM HAS BEEN SOLD OR IS NO LONGER AVALIABLE</b>
+                {% endif %}
+                </td>
+                <td style="height: 200px; width: 1300px">{{listing.name}}: ${{listing.selling_price}}. Posted by {{ listing.creator }}</td>
+                <td><a href="{% url 'listing' listing.id %}">Click to view listing information</a></td>
+
             </tr>
         {% endfor %}
     </table>
