@@ -1,0 +1,10 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+    <h2>Choose a category to filter by</h2>
+
+    <form action="{% url 'category' %}" method="post">
+        {% csrf_token %}
+        {{ category_form }}
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}

@@ -1,13 +1,11 @@
 {% extends "auctions/layout.html" %}
 {% load static %}
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>{{ message }}</h2>
 
     <table>
         {% for listing in listings %}
             <tr>
-                
-                
                 <td id="img-box">
                     <img src="{{listing.image}}">
                     <br>
@@ -15,7 +13,10 @@
                     <b>CLOSED - ITEM HAS BEEN SOLD OR IS NO LONGER AVALIABLE</b>
                 {% endif %}
                 </td>
-                <td style="height: 200px; width: 1300px">{{listing.name}}: ${{listing.selling_price}}. Posted by {{ listing.creator }}</td>
+                <td style="height: 200px; width: 1300px">
+                    {{listing.name}}: ${{listing.selling_price}}. Posted by {{ listing.creator }}
+                    Category: {{ listing.category}}
+                </td>
                 <td><a href="{% url 'listing' listing.id %}">Click to view listing information</a></td>
 
             </tr>

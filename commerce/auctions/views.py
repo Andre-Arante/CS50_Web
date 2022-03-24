@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import *
-from .forms import Create_Form, Edit_Form, Bid_Form
+from .forms import *
 
     
 def index(request):
@@ -25,19 +25,21 @@ def create(request):
             # fetch username in order
             username = None
             if request.user.is_authenticated:
-                username = request.user.username
+                username = request.user
 
             # process the data in form.cleaned_data as required
+            category_name = form.cleaned_data.get("category")
             listing = Auction_Listings(
                 name=form.cleaned_data.get("name"), 
                 selling_price=form.cleaned_data.get("selling_price"), 
                 image=form.cleaned_data.get("image"), 
                 creator=username,
-                category=form.cleaned_data.get("category"))
+                category=Category.objects.get(name=category_name))
             listing.save()
 
             # redirect to a new URL:
             return render(request, 'auctions/index.html', {
+                "message": "Active Listings",
                 "listings": Auction_Listings.objects.all()
             })
     # if a GET (or any other method) we'll create a blank form
@@ -80,7 +82,7 @@ def listing(request, listing_id):
         ## Generate correct form based on user's logged in status
         edit_form = "Must be owner to edit."
         bid_form = Bid_Form()
-        if request.user.username == listing.creator:
+        if request.user == listing.creator:
             edit_form = Edit_Form()
 
         return render(request, 'auctions/listing.html', {
@@ -88,6 +90,28 @@ def listing(request, listing_id):
             "edit_form": edit_form,
             "bid_form": bid_form
         })
+
+@login_required
+def category(request):
+    if request.method == "POST":
+        form = Category_Form(request.POST)
+        if form.is_valid():
+            requested_category = form.cleaned_data["category"]
+            listings = []
+
+            for listing in Auction_Listings.objects.all():
+                if listing.category == requested_category:
+                    listings.append(listing)
+
+            return render(request, 'auctions/index.html', {
+                "listings": listings,
+                "message": f"Results for {requested_category}"
+
+            })
+    else:
+        form = Category_Form()
+    
+    return render(request, 'auctions/category.html', { "category_form": form })
 
 def login_view(request):
     if request.method == "POST":
