@@ -1,9 +1,9 @@
 from django import forms
 
 choices = (
-    ("Home and Decor", "Home and Decor"),
-    ("Entertainment", "Entertainment"),
-    ("Work and Office", "Work and Office")
+    (6, "Home and Decor"), 
+    (7, "Entertainment"),
+    (8, "Work and Office")
 )
 class Create_Form(forms.Form):
     name = forms.CharField(label="Enter item name here", max_length=64)

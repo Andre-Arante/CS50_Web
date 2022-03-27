@@ -28,7 +28,8 @@ def create(request):
                 username = request.user
 
             # process the data in form.cleaned_data as required
-            category_name = form.cleaned_data.get("category")
+            category_id = int(form.cleaned_data["category"])
+            category_name = Category.objects.get(id=category_id)
             listing = Auction_Listings(
                 name=form.cleaned_data.get("name"), 
                 selling_price=form.cleaned_data.get("selling_price"), 
@@ -96,22 +97,18 @@ def category(request):
     if request.method == "POST":
         form = Category_Form(request.POST)
         if form.is_valid():
-            requested_category = form.cleaned_data["category"]
-            listings = []
-
-            for listing in Auction_Listings.objects.all():
-                if listing.category == requested_category:
-                    listings.append(listing)
+            category_id = int(form.cleaned_data["category"])
+            category = Category.objects.get(id=category_id)
+            listings = Auction_Listings.objects.filter(category=category_id)
 
             return render(request, 'auctions/index.html', {
                 "listings": listings,
-                "message": f"Results for {requested_category}"
-
+                "message": f"Results for {category.name}"
             })
+        return render(request, 'auctions/index.html')
     else:
         form = Category_Form()
-    
-    return render(request, 'auctions/category.html', { "category_form": form })
+    return render(request, 'auctions/category.html', { "category_form": form })  
 
 def login_view(request):
     if request.method == "POST":
