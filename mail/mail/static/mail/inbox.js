@@ -78,18 +78,26 @@ function load_email(id)
       e.innerHTML += `<b>Subject:</b> ${email.subject} <br>`;
       e.innerHTML += `<b>Timestamp:</b> ${email.timestamp} <hr>`;
       e.innerHTML += `${email.body}`;
+      e.innerHTML += "<br><button type='button' id='return'>Back</button>";
 
-      document.querySelector('#full-view').append(e);
+      document.getElementById('full-view').append(e);
+      document.getElementById('return').addEventListener('click', () => load_mailbox('inbox'));
 
   });
 }
 
 function load_mailbox(mailbox) {
-  
+
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#full-view').style.display = 'none';
+
+  // Clear the full view div
+  const div = document.getElementById('full-view');
+  while (div.firstChild) {
+    div.removeChild(div.firstChild);
+  }
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -97,7 +105,7 @@ function load_mailbox(mailbox) {
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
-      
+
       emails.forEach(element => {
         const sender = element.sender;
         const timestamp = element.timestamp;
@@ -106,11 +114,11 @@ function load_mailbox(mailbox) {
 
         // Create subject heading
         const e = document.createElement('div');
-        e.innerHTML = `<b>${sender}</b> &emsp;&emsp;&emsp;${subject} <span style="float:right;">${timestamp}<span>`;
+        e.innerHTML = `<b>${sender}</b> &emsp;&emsp;&emsp; ${subject} <span style="float:right;">${timestamp}<span>`;
         e.style.border= '1px solid black';
         e.style.padding = '10px';
 
-        if (e.read) 
+        if (element.read) 
         {
         e.style.backgroundColor = "#ECECEC";
         } else {
@@ -122,7 +130,7 @@ function load_mailbox(mailbox) {
             method: 'PUT',
             body: JSON.stringify({ read: true })
           })
-          load_email(id)
+          load_email(id);
         })
 
         e.addEventListener('mouseenter', () => {
