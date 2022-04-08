@@ -1,3 +1,12 @@
+function clear_children(id)
+{
+  // Clear the full view div
+  const div = document.getElementById(id);
+  while (div.firstChild) {
+    div.removeChild(div.firstChild);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 
   // Use buttons to toggle between views
@@ -44,6 +53,8 @@ function submit_email() {
 
 function compose_email() {
 
+  clear_children('full-view');
+
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
@@ -78,11 +89,34 @@ function load_email(id)
       e.innerHTML += `<b>Subject:</b> ${email.subject} <br>`;
       e.innerHTML += `<b>Timestamp:</b> ${email.timestamp} <hr>`;
       e.innerHTML += `${email.body}`;
-      e.innerHTML += "<br><button type='button' id='return'>Back</button>";
+
+      var status = 'Unarchive'
+      if (email.archived === false) {
+        status = 'Archive';
+      }
+      e.innerHTML += `<br><br><br><button type='button' id='archive'>${status}</button>`;
+      e.innerHTML += "&emsp;&emsp;<button type='button' id='reply'>Reply</button>";
+      e.innerHTML += "&emsp;&emsp;<button type='button' id='return'>Back</button>";
 
       document.getElementById('full-view').append(e);
-      document.getElementById('return').addEventListener('click', () => load_mailbox('inbox'));
 
+      document.getElementById('archive').addEventListener('click', () => {
+        fetch(`/emails/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            archived: !email.archived
+          })
+        })
+        load_mailbox('inbox');
+      });
+      document.getElementById('reply').addEventListener('click', () => {
+        compose_email();
+
+        document.querySelector('#compose-recipients').value = email.recipients;
+        document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+        document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
+      });
+      document.getElementById('return').addEventListener('click', () => load_mailbox('inbox'));
   });
 }
 
@@ -93,11 +127,7 @@ function load_mailbox(mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#full-view').style.display = 'none';
 
-  // Clear the full view div
-  const div = document.getElementById('full-view');
-  while (div.firstChild) {
-    div.removeChild(div.firstChild);
-  }
+  clear_children('full-view');
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
