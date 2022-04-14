@@ -1,14 +1,38 @@
+import time
+
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.core.paginator import Paginator
 
-from .models import User
+from .forms import Create_Post
+from .models import User, Post
 
 
 def index(request):
-    return render(request, "network/index.html")
+    
+    ## Fetch all posts and display using Paginator
+    objects = Post.objects.all()
+    num_items = 10
+
+    p = Paginator(objects, num_items)
+
+    page_number = request.GET.get('page')
+    page_obj = p.get_page(page_number)
+
+    ## Handles New Post Submission
+    form = Create_Post(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        p = Post(content=form.cleaned_data['content'], user=request.user, likes=0)
+        p.save()
+        return HttpResponseRedirect(reverse('index'))
+
+    return render(request, "network/index.html", {
+        'page_obj': page_obj,
+        'form': form
+    })
 
 
 def login_view(request):
