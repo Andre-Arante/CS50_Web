@@ -1,0 +1,22 @@
+input {
+    background-color: rgb(34, 133, 232)
+}
+
+.container #flex-navbar {
+    height: 100%;
+}
+
+.navbar-custom {
+    background-color: #fe3d2e;
+    color: white;
+}
+
+#post {
+    border: 1px rgb(62, 65, 68) solid;
+    width: 900px;
+}
+
+#logo {
+    width: 75px;
+    height: 75px;
+}

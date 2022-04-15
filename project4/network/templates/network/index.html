@@ -2,32 +2,29 @@
 {% load static %}
 
 {% block body %}
-<div id="tbl" style="margin: 2.5%; width:100%">
-    <table >
-        <tr>
-          
-                <h2>New Post</h2>
-                <form action="" method="post" id="create_post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input type="submit" value="Post">
-                    <hr>
-                </form>
-           
-        </tr>
-        
+
+    <div id="post">
+        <h2>Home</h2>
     
-        <div id="posts">
-            {% for post in page_obj %}    
-            <tr>
-                <td>
-                    <b>{{ post.content }}</b>
-                    <br>
-                </td>
-            </tr>
-            {% endfor %}
+    <form action="" method="post" id="create_post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Post">
+    </form>
+    </div>
+
+    <div id="posts">
+        {% for post in page_obj %}    
+        <div id="post">
+            <b>{{ post.user }}</b>
+            <br>
+            {{ post.content }}
+            <br>
         </div>
-    </table>
+            
+        {% endfor %}
+    </div>
+
     <div class="pagination" style="position: fixed; bottom:0">
         <span class="step-links">
             {% if page_obj.has_previous %}
@@ -46,6 +43,8 @@
         </span>
     </div>
 </div>
+
+
     
 {% endblock %}
 

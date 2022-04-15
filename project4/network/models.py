@@ -1,9 +1,22 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
 class User(AbstractUser):
     pass
+
+
+class Post(models.Model):
+    """
+    Model that stores all neccesary data for a post
+    """
+
+    content = models.CharField(max_length=400)
+    user = models.ForeignKey('User', related_name="user_who_posted", on_delete=models.CASCADE)
+    likes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.content
+
 
 # class Friendship(models.Model):
 #     created = models.DateTimeField(auto_now_add=True, editable=False)
@@ -21,15 +34,3 @@ class User(AbstractUser):
 #     commentor = models.ForeignKey(User, related_name="commentor", on_delete=models.CASCADE)
 #     content = models.CharField(max_length=200)
 #     post = models.ForeignKey('Post', related_name="comment_location", on_delete=models.CASCADE)
-
-class Post(models.Model):
-    """
-    Model that stores all neccesary data for a post
-    """
-
-    content = models.CharField(max_length=200)
-    user = models.ForeignKey('User', related_name="user_who_posted", on_delete=models.CASCADE)
-    likes = models.IntegerField(default=0)
-
-    def __str__(self):
-        return self.content

@@ -7,8 +7,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
 
-from .forms import Create_Post
-from .models import User, Post
+from .models import *
+from .forms import CreatePost
 
 
 def index(request):
@@ -23,11 +23,9 @@ def index(request):
     page_obj = p.get_page(page_number)
 
     ## Handles New Post Submission
-    form = Create_Post(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        p = Post(content=form.cleaned_data['content'], user=request.user, likes=0)
-        p.save()
-        return HttpResponseRedirect(reverse('index'))
+    form = CreatePost(user=request.user, data=request.POST)
+    if form.is_valid():
+        form.save()
 
     return render(request, "network/index.html", {
         'page_obj': page_obj,
