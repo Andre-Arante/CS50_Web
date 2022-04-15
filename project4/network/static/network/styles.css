@@ -1,5 +1,12 @@
-input {
-    background-color: rgb(34, 133, 232)
+input[type="text"] {
+    width: 500px;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1px solid black;
+}
+
+input:focus {
+    outline: none;
 }
 
 .container #flex-navbar {
@@ -19,4 +26,8 @@ input {
 #logo {
     width: 75px;
     height: 75px;
+}
+
+#post {
+    width: 69rem;
 }

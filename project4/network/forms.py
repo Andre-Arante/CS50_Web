@@ -1,3 +1,4 @@
+from logging import PlaceHolder
 from socket import fromshare
 from django import forms
 
@@ -16,7 +17,11 @@ class CreatePost(forms.ModelForm):
             obj.save()
         return obj
 
-    content = forms.CharField(widget=forms.Textarea, label='')
+    content = forms.CharField(label='', widget=forms.TextInput(attrs={
+        'placeholder': "What's going on...",
+        'style': 'font-size: xx-large',
+        'autocomplete': 'off'
+        }))
     class Meta:
         model = Post
         fields = ['content']

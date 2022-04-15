@@ -1,4 +1,5 @@
 import time
+import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
@@ -14,7 +15,7 @@ from .forms import CreatePost
 def index(request):
     
     ## Fetch all posts and display using Paginator
-    objects = Post.objects.all()
+    objects = Post.objects.all().order_by('-timestamp')
     num_items = 10
 
     p = Paginator(objects, num_items)
