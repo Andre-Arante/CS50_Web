@@ -20,8 +20,8 @@ class CreatePost(forms.ModelForm):
     content = forms.CharField(label='', widget=forms.TextInput(attrs={
         'placeholder': "What's going on...",
         'style': 'font-size: xx-large',
-        'autocomplete': 'off'
-        }))
+        'autocomplete': 'off',
+        }), initial='')
     class Meta:
         model = Post
         fields = ['content']

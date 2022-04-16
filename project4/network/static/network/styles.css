@@ -21,13 +21,5 @@ input:focus {
 #post {
     border: 1px rgb(62, 65, 68) solid;
     width: 900px;
-}
-
-#logo {
-    width: 75px;
-    height: 75px;
-}
-
-#post {
-    width: 69rem;
+    max-width: 100%;
 }
