@@ -5,6 +5,19 @@
 <!-- Page content-->
 <div class="container">
   <div class="row col-gap">
+    <!-- Page header with logo and tagline-->
+    <header class="py-1 border-bottom mb-4">
+      <div class="container">
+          <div class="text-center my-5">
+
+              <form action="" method="post" id="create_post">
+                  {% csrf_token %}
+                  {{ form.as_table }}
+                  <input type="submit" value="Post" class="btn btn-primary">
+              </form> 
+          </div>
+      </div>
+      
       <!-- Blog entries-->
       <div class="col-md-6">
           <!-- Featured blog post-->

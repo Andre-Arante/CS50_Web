@@ -1,48 +1,45 @@
 {% extends "network/layout.html" %}
 {% load static %}
-
+        
 {% block body %}
-    <!-- Masthead-->
-    <header class="masthead bg-primary text-white text-center">
-        <div class="container d-flex align-items-center flex-column">
-            <!-- Masthead Avatar Image-->
-            <img src="network\static\network\avataaars.svg" alt="..." />
-            <!-- Masthead Heading-->
-            <h1 class="masthead-heading text-uppercase mb-0">Start Bootstrap</h1>
-            <!-- Icon Divider-->
-            <div class="divider-custom divider-light">
-                <div class="divider-custom-line"></div>
-                <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                <div class="divider-custom-line"></div>
-            </div>
-            <!-- Masthead Subheading-->
-            <p class="masthead-subheading font-weight-light mb-0">Graphic Artist - Web Designer - Illustrator</p>
+<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+    <div class="card p-4">
+        <div class=" image d-flex flex-column justify-content-center align-items-center"> <button class="btn btn-secondary"> <img src="https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg" height="100" width="100" /></button> <span class="name mt-3">{{ user.username }}</span> <span class="idd">{{ user.email }}</span>
+            <div class="d-flex flex-row justify-content-center align-items-center mt-3"> <span class="number">{{ profile.followers  }} <span class="follow">Followers</span></span> </div>
+            
+            <!-- Logic for displaying edit/follow/unfollow -->
+            <div class=" d-flex mt-2"> 
+                {% if button == "follow" %}
+                <form action="{% url 'profile' user.username %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn1 btn-dark" id="follow">Follow</button> 
+                </form>
+                {% elif button == "edit" %}
+                <form action="{% url 'edit' user.username" method="get">
+                    {% csrf_token %}
+                    <button class="btn1 btn-dark">Edit Profile</button>
+                </form>
+                    
+                {% else %}
+                <form action="{% url 'profile' user.username %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn1 btn-dark">Unfollow</button>
+                </form>
+                    
+                {% endif %}
+            </div>            
+            <div class="text mt-3"> <span>{{ profile.description }} </span> </div>
+            <div class=" px-2 rounded mt-4 date "> <span class="join">{{ user.date_joined. }} </span> </div>
         </div>
-    </header>
-
-    <!-- About Section-->
-    <section class="page-section bg-primary text-white mb-0" id="about">
-        <div class="container">
-            <!-- About Section Heading-->
-            <h2 class="page-section-heading text-center text-uppercase text-white">About</h2>
-            <!-- Icon Divider-->
-            <div class="divider-custom divider-light">
-                <div class="divider-custom-line"></div>
-                <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                <div class="divider-custom-line"></div>
-            </div>
-            <!-- About Section Content-->
-            <div class="row">
-                <div class="col-lg-4 ms-auto"><p class="lead">Freelancer is a free bootstrap theme created by Start Bootstrap. The download includes the complete source files including HTML, CSS, and JavaScript as well as optional SASS stylesheets for easy customization.</p></div>
-                <div class="col-lg-4 me-auto"><p class="lead">You can create your own custom avatar for the masthead, change the icon in the dividers, and add your email address to the contact form to make it fully functional!</p></div>
-            </div>
-            <!-- About Section Button-->
-            <div class="text-center mt-4">
-                <a class="btn btn-xl btn-outline-light" href="https://startbootstrap.com/theme/freelancer/">
-                    <i class="fas fa-download me-2"></i>
-                    Free Download!
-                </a>
-            </div>
+    </div>
+    <div class="card p-4">
+        <div class=" image d-flex flex-column justify-content-center align-items-center">Following</span>
+            {% for friend in friends %}
+                <div class="d-flex flex-row justify-content-center align-items-center mt-3">
+                    {{ friend }}
+                </div>
+            {% endfor %}
         </div>
-    </section>
+    </div>
+</div>
 {% endblock %}

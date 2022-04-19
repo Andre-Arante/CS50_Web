@@ -22,9 +22,11 @@ class Post(models.Model):
         return self.content
 
 class Friendship(models.Model):
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    creator = models.ForeignKey(User, related_name="friendship_creator", on_delete=models.CASCADE)
-    friend = models.ForeignKey(User, related_name="friend_set", on_delete=models.CASCADE)
+    root = models.ForeignKey(User, related_name="friendship_creator", on_delete=models.CASCADE)
+    following = models.ForeignKey(User, related_name="friend_set", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.root} is following {self.following}"
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, on_delete=models.CASCADE)
@@ -32,9 +34,12 @@ class UserProfile(models.Model):
     following = models.IntegerField(default=0)
     description = models.CharField(max_length=400, default="I am an arbitrary user with zero personality...")
 
-    def get_friends(self):
+    def get_following(self):
         user = self.user
-        return Friendship.objects.filter(creator=user, friend=user)
+        return Friendship.objects.filter(root=user)
+
+    def __str__(self):
+        return self.user.username
 
 # class Comment(models.Model):
 #     commentor = models.ForeignKey(User, related_name="commentor", on_delete=models.CASCADE)

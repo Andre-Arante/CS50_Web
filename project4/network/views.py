@@ -4,17 +4,17 @@ import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect, render
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
 
-from .models import *
+from .models import Post, User, UserProfile, Friendship
 from .forms import CreatePost
 
 
 def index(request):
-    
+
     users = User.objects.all()
 
     ## Fetch all posts and display using Paginator
@@ -41,9 +41,54 @@ def index(request):
         'form': form
     })
 
-
 def profile(request, user):
-    return render(request, "network/profile.html")
+    # Generates correct user profile
+    user = User.objects.get(username=user)
+    user_profile = UserProfile.objects.get(user=user)
+
+    # Fetches friend list
+    friends = user_profile.get_following()
+    friend_list = []
+
+    for friend in friends:
+        name = User.objects.get(username=friend.following)
+        friend_list.append(name)
+
+    # Creates a friendship between two users if user pressed "follow"
+    if request.method == "POST":
+
+        profile = UserProfile.objects.get(user=user)
+
+        if Friendship.objects.filter(root=request.user, following=user).exists():
+            Friendship.objects.filter(root=request.user, following=user).delete()
+            profile.followers += 1
+            profile.save()
+        else:
+            new_friendship = Friendship(root=request.user, following=user)
+            new_friendship.save()
+            profile.followers -= 1
+
+        profile.save()
+        
+
+    # Displays correct button
+    if request.user == user:
+        button = 'edit'
+    elif Friendship.objects.filter(root=request.user, following=user).exists():
+        button = 'unfollow'
+    else:
+        button = 'follow'
+
+
+    return render(request, "network/profile.html", {
+        'user': user,
+        'button': button,  
+        'profile': user_profile,
+        'friends': friend_list
+    })
+
+def edit(request, user):
+    return render(request, "network/edit.html")
 
 def login_view(request):
     if request.method == "POST":
