@@ -2,7 +2,6 @@
 {% load static %}
 
 
-
 {% block body %}
 
 <!-- Page content-->
@@ -45,15 +44,12 @@
                             <p class="card-text">{{ post.content }}</p>
 
                             <!-- Like button -->
-                            <div id="like_count{{post.id}}">Likes: {{ post.likes }}</div>
-
-                            {% if liked %}
-                            <button class="btn btn-outline-danger" id="unlike_button{{post.id}}" onclick="unlike('{{ post.id }}')">Unlike</button>
-
-                            {% else %}
-                            <button class="btn btn-outline-primary" id="like_button{{post.id}}" onclick="like('{{ post.id }}')">Like</button>
-
-                            {% endif %}
+                            <p class="card-text">
+                                <div data-id="{{post.id}}"
+                                    class="card-link {% if post.current_like > 0 %} fas {%else%} far {% endif %} fa-heart">&nbsp<small
+                                        class="text-muted">{{post.like_set.count}}</small>
+                                        </div>
+                            </p>
                         </div>
                     </div>
                     {% endfor %}
@@ -67,14 +63,14 @@
                           <li class="page-item"><a class="page-link" href="#">2</a></li>
                           <li class="page-item"><a class="page-link" href="#">3</a></li>
                           <!-- {% if page_obj.has_next %} -->
-                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-                          <!-- {% endif %} -->
+
+                          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
                         </ul>
+                          <!-- {% endif %} -->
                       </nav>
               </div>
           </div>
       </div>
           
       {% include "./side_widgets.html" %}
-
 {% endblock %}

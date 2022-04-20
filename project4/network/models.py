@@ -45,5 +45,8 @@ class Like(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
+    class Meta:
+        unique_together = (('post', 'user'),)
+
     def __str__(self):
         return f"{self.post} : {self.user}"

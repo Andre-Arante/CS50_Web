@@ -1,21 +1,20 @@
-document.addEventListener('DOMContentLoaded', function() {
+var last_form = null;
+document.addEventListener('DOMContentLoaded', function () {
 
-    function likeOrUnlike(id, like) {
-        fetch(`/like/${id}`, {
-          method: "PUT",
-          body: JSON.stringify({ like: !!like }),
-        })
-          .then((resp) => resp.json())
-          .then((post) => {
-            document.querySelector(`#like_count${id}`).innerHTML = post.likes;
-          });
-      }
-      
-      function like(id) {
-        likeOrUnlike(id, true);
-      }
-      
-      function unlike(id) {
-        likeOrUnlike(id, false);
-      }
+    //Add the likeDislike () function call to the heart's onclick method
+    document.querySelectorAll('.fa-heart').forEach(div => {
+        div.onclick = function () {
+            likeDislike(this);
+        };
+    });
+
+    //It receives an element and makes the asynchronous call of the like method.
+    async function likeDislike(element) {
+        await fetch(`/like/${element.dataset.id}`)
+            .then(response => response.json())
+            .then(data => {
+                element.className = data.css_class;
+                element.querySelector('small').innerHTML = data.total_likes;
+            });
+    }
 });

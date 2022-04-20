@@ -1,13 +1,16 @@
 import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.utils.decorators import method_decorator
 
 from .models import Post, User, UserProfile, Friendship, Like
 from .forms import CreatePost
+
 
 
 def index(request):
@@ -15,7 +18,7 @@ def index(request):
     users = User.objects.all()
 
     ## Fetch all posts and display using Paginator
-    objects = Post.objects.all().order_by('timestamp')
+    objects = Post.objects.all().order_by('-timestamp')
     num_items = 10
 
     p = Paginator(objects, num_items)
@@ -35,7 +38,7 @@ def index(request):
     return render(request, "network/index.html", {
         'all_users': users,
         'page_obj': page_obj,
-        'form': form
+        'form': form,
     })
 
 def profile(request, user):
@@ -105,23 +108,22 @@ def edit(request, user):
 
     return render(request, "network/edit.html")
 
-def post(request, id):
-    post = Post.objects.get(id=id)
+def like(request, id):
 
-    if request.method == "GET":
-        return HttpResponseRedirect(reverse("index"))
+    if request.method == 'GET':
+        css_class = 'fas fa-heart'
+        post = Post.objects.get(id=id)
+        like = Like.objects.get_or_create(
+            user=request.user, post=post)
 
-    if request.method == "PUT":
-        data = json.loads(request.body)
-        if data.get("like"):
-            Like.objects.create(user=request.user, post=post)
-            post.Like = Like.objects.filter(post=post).count()
-        else:
+        if not like[1]:
+            css_class = 'far fa-heart'
             Like.objects.filter(user=request.user, post=post).delete()
-            post.Like = Like.objects.filter(post=post).count()
-        post.save()
-        
-        return JSONResponse({"likes": post.likes})
+
+        total_likes = Like.objects.filter(post=post).count()
+    return JsonResponse({
+        "like": id, "css_class": css_class, "total_likes": total_likes
+    })
 
 def login_view(request):
     if request.method == "POST":
