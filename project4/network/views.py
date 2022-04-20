@@ -1,15 +1,12 @@
-import re
-import time
-import datetime
-
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
 
-from .models import Post, User, UserProfile, Friendship
+from .models import Post, User, UserProfile, Friendship, Like
 from .forms import CreatePost
 
 
@@ -109,11 +106,22 @@ def edit(request, user):
     return render(request, "network/edit.html")
 
 def post(request, id):
-    r_post = Post.objects.get(id=id)
-    if r_post.exists():
-        return HttpResponse(request.method)
-    else: 
-        raise Http404('Post has been either deleted or moved')
+    post = Post.objects.get(id=id)
+
+    if request.method == "GET":
+        return HttpResponseRedirect(reverse("index"))
+
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        if data.get("like"):
+            Like.objects.create(user=request.user, post=post)
+            post.Like = Like.objects.filter(post=post).count()
+        else:
+            Like.objects.filter(user=request.user, post=post).delete()
+            post.Like = Like.objects.filter(post=post).count()
+        post.save()
+        
+        return JSONResponse({"likes": post.likes})
 
 def login_view(request):
     if request.method == "POST":

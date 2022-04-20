@@ -44,9 +44,16 @@
                             <h2 class="card-title h4">{{ post.user }}</h2>
                             <p class="card-text">{{ post.content }}</p>
 
-                            <!-- React login to make like button interactive -->
-                            <button data-section="1" id="like-button">Like</button>
-                            <div id="num-likes"></div>
+                            <!-- Like button -->
+                            <div id="like_count{{post.id}}">Likes: {{ post.likes }}</div>
+
+                            {% if liked %}
+                            <button class="btn btn-outline-danger" id="unlike_button{{post.id}}" onclick="unlike('{{ post.id }}')">Unlike</button>
+
+                            {% else %}
+                            <button class="btn btn-outline-primary" id="like_button{{post.id}}" onclick="like('{{ post.id }}')">Like</button>
+
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}
