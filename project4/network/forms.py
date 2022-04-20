@@ -2,7 +2,7 @@ from logging import PlaceHolder
 from socket import fromshare
 from django import forms
 
-from .models import Post
+from .models import Post, UserProfile
 
 class CreatePost(forms.ModelForm):
     def __init__(self, **kwargs):

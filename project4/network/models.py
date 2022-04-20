@@ -34,14 +34,12 @@ class UserProfile(models.Model):
     following = models.IntegerField(default=0)
     description = models.CharField(max_length=400, default="I am an arbitrary user with zero personality...")
 
-    def get_following(self):
+    def get_followers(self):
         user = self.user
-        return Friendship.objects.filter(root=user)
+        return Friendship.objects.filter(following=user)
 
     def __str__(self):
         return self.user.username
 
-# class Comment(models.Model):
-#     commentor = models.ForeignKey(User, related_name="commentor", on_delete=models.CASCADE)
-#     content = models.CharField(max_length=200)
-#     post = models.ForeignKey('Post', related_name="comment_location", on_delete=models.CASCADE)
+# class Like(models.Model):
+#     user = models.ForeignKey

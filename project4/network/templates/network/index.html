@@ -1,7 +1,10 @@
 {% extends "network/layout.html" %}
 {% load static %}
 
+
+
 {% block body %}
+
 <!-- Page content-->
 <div class="container">
   <div class="row col-gap">
@@ -40,6 +43,10 @@
                             <div class="small text-muted">{{ post.timestamp }}</div>
                             <h2 class="card-title h4">{{ post.user }}</h2>
                             <p class="card-text">{{ post.content }}</p>
+
+                            <!-- React login to make like button interactive -->
+                            <button data-section="1" id="like-button">Like</button>
+                            <div id="num-likes"></div>
                         </div>
                     </div>
                     {% endfor %}

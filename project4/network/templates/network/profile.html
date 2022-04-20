@@ -2,44 +2,77 @@
 {% load static %}
         
 {% block body %}
-<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
-    <div class="card p-4">
-        <div class=" image d-flex flex-column justify-content-center align-items-center"> <button class="btn btn-secondary"> <img src="https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg" height="100" width="100" /></button> <span class="name mt-3">{{ user.username }}</span> <span class="idd">{{ user.email }}</span>
-            <div class="d-flex flex-row justify-content-center align-items-center mt-3"> <span class="number">{{ profile.followers  }} <span class="follow">Followers</span></span> </div>
-            
-            <!-- Logic for displaying edit/follow/unfollow -->
-            <div class=" d-flex mt-2"> 
-                {% if button == "follow" %}
-                <form action="{% url 'profile' user.username %}" method="post">
-                    {% csrf_token %}
-                    <button class="btn1 btn-dark" id="follow">Follow</button> 
-                </form>
-                {% elif button == "edit" %}
-                <form action="{% url 'edit' user.username" method="get">
-                    {% csrf_token %}
-                    <button class="btn1 btn-dark">Edit Profile</button>
-                </form>
-                    
-                {% else %}
-                <form action="{% url 'profile' user.username %}" method="post">
-                    {% csrf_token %}
-                    <button class="btn1 btn-dark">Unfollow</button>
-                </form>
-                    
-                {% endif %}
-            </div>            
-            <div class="text mt-3"> <span>{{ profile.description }} </span> </div>
-            <div class=" px-2 rounded mt-4 date "> <span class="join">{{ user.date_joined. }} </span> </div>
+<div class="container">
+    <div class="row col-gap">
+        <div class="card p-4">
+            <div class=" image d-flex flex-column justify-content-center align-items-center"> <button class="btn btn-secondary"> <img src="https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg" height="100" width="100" /></button> <span class="name mt-3">{{ user.username }}</span> <span class="idd">{{ user.email }}</span>
+                <div class="d-flex flex-row justify-content-center align-items-center mt-3"> <span class="number">{{ profile.followers  }} <span class="follow">Followers</span></span> </div>
+                
+                <!-- Logic for displaying edit/follow/unfollow -->
+                <div class=" d-flex mt-2"> 
+                    {% if button == "follow" %}
+                    <form action="{% url 'profile' user.username %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn1 btn-dark" id="follow">Follow</button> 
+                    </form>
+                    {% elif button == "edit" %}
+                    <form action="{% url 'edit' user.username" method="get">
+                        {% csrf_token %}
+                        <button class="btn1 btn-dark">Edit Profile</button>
+                    </form>
+                        
+                    {% else %}
+                    <form action="{% url 'profile' user.username %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn1 btn-dark">Unfollow</button>
+                    </form>
+                        
+                    {% endif %}
+                </div>            
+                <div class="text mt-3"> <span>{{ profile.description }} </span> </div>
+                <div class=" px-2 rounded mt-4 date "> <span class="join">{{ user.date_joined. }} </span> </div>
+            </div>
+        </div>
+        <div class="card p-4">
+            <div class=" image d-flex flex-column justify-content-center align-items-center">Followers</span>
+                {% for friend in friends %}
+                    <div class="d-flex flex-row justify-content-center align-items-center mt-3">
+                        {{ friend }}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-    <div class="card p-4">
-        <div class=" image d-flex flex-column justify-content-center align-items-center">Following</span>
-            {% for friend in friends %}
-                <div class="d-flex flex-row justify-content-center align-items-center mt-3">
-                    {{ friend }}
-                </div>
-            {% endfor %}
+    
+    <!-- Displays user posts -->
+    <div class="row">
+        <div class="col-lg-6">
+            <!-- Blog post-->
+            {% for post in posts %}
+              <div class="card mb-4" id="post">
+                  <div class="card-body">
+                      <div class="small text-muted">{{ post.timestamp }}</div>
+                      <h2 class="card-title h4">{{ post.user }}</h2>
+                      <p class="card-text">{{ post.content }}</p>
+                  </div>
+              </div>
+              {% endfor %}
+
+              <nav aria-label="Page navigation example">
+                  <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                    {% endif %}
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <!-- {% if page_obj.has_next %} -->
+                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                    <!-- {% endif %} -->
+                  </ul>
+                </nav>
         </div>
     </div>
+    
 </div>
 {% endblock %}

@@ -4,7 +4,7 @@ import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
@@ -18,7 +18,7 @@ def index(request):
     users = User.objects.all()
 
     ## Fetch all posts and display using Paginator
-    objects = Post.objects.all().order_by('-timestamp')
+    objects = Post.objects.all().order_by('timestamp')
     num_items = 10
 
     p = Paginator(objects, num_items)
@@ -46,29 +46,33 @@ def profile(request, user):
     user = User.objects.get(username=user)
     user_profile = UserProfile.objects.get(user=user)
 
+    # Creates a friendship between two users if user pressed "follow"
+    if request.method == "POST":
+        
+        if Friendship.objects.filter(root=request.user, following=user).exists():
+            # Delete the friendship
+            Friendship.objects.filter(root=request.user, following=user).delete()
+
+            # Update following count
+            user_profile.followers -= 1
+            user_profile.save()
+        # If a friendship doesn't already exist, create one
+        else: 
+            n_friend = Friendship(root=request.user, following=user)
+            n_friend.save()
+
+            # Update following count
+            user_profile.followers += 1
+            user_profile.save()
+
+
     # Fetches friend list
-    friends = user_profile.get_following()
+    friends = user_profile.get_followers()
     friend_list = []
 
     for friend in friends:
-        name = User.objects.get(username=friend.following)
+        name = User.objects.get(username=friend.root)
         friend_list.append(name)
-
-    # Creates a friendship between two users if user pressed "follow"
-    if request.method == "POST":
-
-        profile = UserProfile.objects.get(user=user)
-
-        if Friendship.objects.filter(root=request.user, following=user).exists():
-            Friendship.objects.filter(root=request.user, following=user).delete()
-            profile.followers += 1
-            profile.save()
-        else:
-            new_friendship = Friendship(root=request.user, following=user)
-            new_friendship.save()
-            profile.followers -= 1
-
-        profile.save()
         
 
     # Displays correct button
@@ -79,16 +83,37 @@ def profile(request, user):
     else:
         button = 'follow'
 
+    # Fetches all posts posted by the selected user
+    posts = Post.objects.filter(user=user)
 
     return render(request, "network/profile.html", {
         'user': user,
         'button': button,  
         'profile': user_profile,
-        'friends': friend_list
+        'friends': friend_list,
+        'posts': posts
     })
 
 def edit(request, user):
+
+    user = User.objects.get(username=user)
+    e_profile = UserProfile.objects.get(user=user)
+
+    if request.method == 'POST':
+        q_dict = request.POST
+
+        n_description = q_dict['description']
+        e_profile.description = n_description
+        e_profile.save()
+
     return render(request, "network/edit.html")
+
+def post(request, id):
+    r_post = Post.objects.get(id=id)
+    if r_post.exists():
+        return HttpResponse(request.method)
+    else: 
+        raise Http404('Post has been either deleted or moved')
 
 def login_view(request):
     if request.method == "POST":
